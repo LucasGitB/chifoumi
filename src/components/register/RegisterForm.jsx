@@ -7,25 +7,14 @@ export const RegisterForm = () => {
       <h1 className="font-bold text-3xl">Inscription</h1>
 
       <form className="flex flex-col gap-8 mt-8">
-        <TextField
-          required
-          id="outlined-required"
-          label="Pseudo"
-          defaultValue="Hello World"
-        />
+        <TextField required id="outlined-required" label="Pseudo" />
 
-        <TextField
-          required
-          id="outlined-required"
-          label="Mot de passe"
-          defaultValue="Hello World"
-        />
+        <TextField required id="outlined-required" label="Mot de passe" />
 
         <TextField
           required
           id="outlined-required"
           label="Confirmation du mot de passe"
-          defaultValue="Hello World"
         />
 
         <Button
@@ -34,9 +23,10 @@ export const RegisterForm = () => {
             backgroundColor: "black",
             color: "white",
             "&:hover": { backgroundColor: "darkred" },
+            fontWeight: "bold",
           }}
         >
-          Connexion
+          S'inscrire
         </Button>
 
         <Link to="/login">Déjà un compte ?</Link>

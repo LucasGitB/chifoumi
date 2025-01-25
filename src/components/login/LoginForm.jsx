@@ -11,14 +11,12 @@ export const LoginForm = () => {
           required
           id="outlined-required"
           label="Pseudo"
-          defaultValue="Hello World"
         />
 
         <TextField
           required
           id="outlined-required"
           label="Mot de passe"
-          defaultValue="Hello World"
         />
 
         <Button
@@ -27,10 +25,11 @@ export const LoginForm = () => {
             backgroundColor: "black",
             color: "white",
             "&:hover": { backgroundColor: "darkred" },
-            width: "50"
+            width: "50",
+            fontWeight: "bold"
           }}
         >
-          Connexion
+          Se connecter
         </Button>
 
         <Link to="/register">Pas de compte ?</Link>
