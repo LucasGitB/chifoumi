@@ -1,11 +1,11 @@
+import PropTypes from 'prop-types';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
 import Typography from '@mui/material/Typography';
 import CardActionArea from '@mui/material/CardActionArea';
-import image from "../assets/image.png"
 
-export default function ActionAreaCard({title, description}) {
+export default function ActionAreaCard({ title, description, image }) {
   return (
     <Card sx={{ maxWidth: 345 }}>
       <CardActionArea>
@@ -27,3 +27,9 @@ export default function ActionAreaCard({title, description}) {
     </Card>
   );
 }
+
+ActionAreaCard.propTypes = {
+  title: PropTypes.string.isRequired,
+  description: PropTypes.string.isRequired,
+  image: PropTypes.string.isRequired, 
+};

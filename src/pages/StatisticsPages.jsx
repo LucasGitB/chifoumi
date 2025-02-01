@@ -1,14 +1,14 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import { Button, CircularProgress, Alert } from "@mui/material";
+import { CircularProgress, Alert } from "@mui/material";
 import { HeaderTitle } from "../components/HeaderTitle";
 import { decodeToken } from "react-jwt";
 
-export const CreateGamePage = () => {
+export const StatisticsPage = () => {
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
-  const [matchInProgress, setMatchInProgress] = useState(null);
+  const [matchInProgress, setMatchInProgress] = useState(null); 
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -121,23 +121,15 @@ export const CreateGamePage = () => {
 
   return (
     <>
-      <HeaderTitle title={"Jouer"} route="/home" showArrow={true}/>
+      <HeaderTitle title={"Statistiques"} route="/home" showArrow={true} />
       <div className="flex w-full gap-10 mt-10">
         <div className="flex flex-col bg-white p-8 shadow-lg w-full ml-10 rounded-lg">
-          <h2 className="text-xl font-bold mb-4">Rejoindre une partie</h2>
-          <p>Il n'y a pas de partie en cours</p>
+          <h2 className="text-xl font-bold mb-4">Parties jouées</h2>
         </div>
         <div className="flex flex-col bg-white p-8 shadow-lg w-full mr-10 rounded-lg">
-          <h2 className="text-xl font-bold mb-4">Créer une partie</h2>
-          <Button
-            sx={{ backgroundColor: "#1E3A8A" }}
-            variant="contained"
-            onClick={handlePlayGame}
-          >
-            {matchInProgress
-              ? "Rejoindre la partie"
-              : "Créer une nouvelle partie"}
-          </Button>
+          <h2 className="text-xl font-bold mb-4">Victoires</h2>
+
+          <h2 className="text-xl font-bold mb-4">Défaites</h2>
         </div>
       </div>
     </>

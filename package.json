@@ -17,8 +17,10 @@
     "@mui/material": "^6.4.1",
     "@tailwindcss/vite": "^4.0.0",
     "@tanstack/react-router": "^1.97.17",
+    "axios": "^1.7.9",
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
+    "react-jwt": "^1.2.2",
     "tailwindcss": "^4.0.0"
   },
   "devDependencies": {
