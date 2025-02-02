@@ -9,6 +9,7 @@ import PrivateRoute from "./PrivateRoute";
 import { MatchPage } from "./pages/MatchPage";
 import { HomePage } from "./pages/HomePage";
 import { StatisticsPage } from "./pages/StatisticsPages";
+import ShowHistory from "./pages/ShowHistory";
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
           <Route path="create-game" element={<CreateGamePage />} />
           <Route path="match/:id" element={<MatchPage />} />
           <Route path="statistics" element={<StatisticsPage />} />
+          <Route path="history" element={<PrivateRoute element={<ShowHistory />} />} />
         </Route>
       </Routes>
     </BrowserRouter>
