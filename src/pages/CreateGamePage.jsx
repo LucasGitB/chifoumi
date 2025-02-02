@@ -58,6 +58,11 @@ export const CreateGamePage = () => {
   return (
     <>
       <HeaderTitle title={"Jouer"} route="/home" showArrow={true} />
+      <div className="flex justify-center items-center mt-24 gap-10">
+        <ActionGameButton image={pierre} altText="Pierre" color={"rgba(50, 255, 0, 0.5)"}/>
+        <ActionGameButton image={feuille} altText="Feuille" color={"rgba(255, 0, 0, 0.5)"}/>
+        <ActionGameButton image={ciseaux} altText="Ciseaux" color={"rgba(0, 191, 255, 0.5)"}/>
+      </div>
       <div className="flex w-full gap-10 mt-10">
         <div className="flex flex-col bg-white p-8 shadow-lg w-full rounded-lg">
           <h2 className="text-xl font-bold mb-4">Créer une partie</h2>

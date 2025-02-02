@@ -7,19 +7,28 @@ import image from "../assets/logojeux.jpg";
 const playDescription =
   "Chaque coup peut te couronner maître du hasard ou du calcul malin, qui sortira vainqueur ?";
 
-const statistiqueDescription = "Analyser vos performances afin de rester le grand champion !"
+const statistiqueDescription =
+  "Analyser vos performances afin de rester le grand champion !";
 
 export const HomePage = () => {
   return (
     <>
-    <HeaderTitle title="Menu" showArrow={false}/>
+      <HeaderTitle title="Menu" showArrow={false} />
       <div className="flex gap-36 justify-center items-center mt-24">
         <Link to="/statistics">
-          <ActionAreaCard title={"Statistiques"} description={statistiqueDescription} image={imageStats}/>
+          <ActionAreaCard
+            title={"Statistiques"}
+            description={statistiqueDescription}
+            image={imageStats}
+          />
         </Link>
 
         <Link to="/create-game">
-          <ActionAreaCard title={"Jouer"} description={playDescription} image={image}/>
+          <ActionAreaCard
+            title={"Jouer"}
+            description={playDescription}
+            image={image}
+          />
         </Link>
       </div>
     </>
