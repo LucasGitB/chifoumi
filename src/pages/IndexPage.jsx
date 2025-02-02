@@ -1,25 +1,43 @@
 import pierre from "../assets/pierre.png";
 import feuille from "../assets/feuille.png";
 import ciseaux from "../assets/ciseaux.png";
-import { Link } from "react-router-dom";
+import { Link as RouterLink } from "react-router-dom";
+import Button from "@mui/material/Button";
+import Typography from "@mui/material/Typography";
 
 export const IndexPage = () => {
   return (
-    <>
-      <div className="flex justify-center items-center h-screen flex-col w-full gap-10">
-        <h1 className="text-7xl font-bold text-center w-1/2">
+    <main className="flex justify-center items-center h-full w-full p-4">
+      <div className="flex flex-col items-center gap-10">
+        <Typography variant="h1" component="h1" className="text-center w-1/2">
           Affronte tes amis et deviens le champion du chifoumi
-        </h1>
-        <h1 className="text-4xl font-bold text-center w-1/2">Prêt à tenter ta chance ?</h1>
+        </Typography>
+        <Typography variant="h4" component="p">
+          Prêt à tenter ta chance ?
+        </Typography>
 
-        <Link to="/login" className="p-4 bg-blue-900 rounded-lg text-white">Se connecter</Link>
+        <Button component={RouterLink} variant="contained" to="/login">
+          Se connecter
+        </Button>
 
-        <div className="flex justify-center items-center">
-          <img className="scale-50 object-contain" src={pierre} alt="Pierre" />
-          <img className="scale-50 object-contain" src={feuille} alt="Feuille" />
-          <img className="scale-50 object-contain" src={ciseaux} alt="Ciseaux" />
+        <div className="flex flex-wrap justify-center items-center gap-4 sm:gap-8 md:gap-12 lg:gap-16">
+          <img
+            className="w-24 sm:w-32 md:w-40 lg:w-48 object-contain"
+            src={pierre}
+            alt="Pierre"
+          />
+          <img
+            className="w-24 sm:w-32 md:w-40 lg:w-48 object-contain"
+            src={feuille}
+            alt="Feuille"
+          />
+          <img
+            className="w-24 sm:w-32 md:w-40 lg:w-48 object-contain"
+            src={ciseaux}
+            alt="Ciseaux"
+          />
         </div>
       </div>
-    </>
+    </main>
   );
 };
