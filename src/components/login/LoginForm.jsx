@@ -17,7 +17,7 @@ export const LoginForm = () => {
       const response = await authService.login(username, password);
 
       if (response.token) {
-        localStorage.setItem('token', response.data.token);
+        localStorage.setItem('token', response.token);
         navigate('/home');
       }
     } catch (error) {
