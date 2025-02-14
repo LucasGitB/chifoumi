@@ -63,8 +63,8 @@ export const CreateGamePage = () => {
       <HeaderTitle title={"Jouer"} route="/home" showArrow={true} />
       {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
 
-      <div className="flex w-full gap-10 mt-10">
-        <div className="flex flex-col bg-white p-8 shadow-lg w-full rounded-lg ml-10">
+      <div className="flex flex-col md:flex-row w-full gap-10 mt-10">
+        <div className="flex flex-col bg-white p-8 shadow-lg w-full rounded-lg">
           <h2 className="text-xl font-bold mb-4">Créer une partie</h2>
           <Button
             sx={{ backgroundColor: "#1E3A8A" }}
@@ -76,7 +76,7 @@ export const CreateGamePage = () => {
           </Button>
         </div>
 
-        <div className="flex flex-col bg-white p-8 shadow-lg w-full rounded-lg mr-10">
+        <div className="flex flex-col bg-white p-8 shadow-lg w-full rounded-lg">
           <h2 className="text-xl font-bold mb-4">Historique des parties</h2>
           <Button
             sx={{ backgroundColor: "#1E3A8A" }}

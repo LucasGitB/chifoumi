@@ -5,7 +5,7 @@ export const Layout = () => {
   return (
     <>
       <div className="bg-blue-900 p-8">
-        <img src={logo} alt="" className="w-1/10" />
+        <img src={logo} alt="" className="w-50" />
       </div>
       <Outlet />
     </>
