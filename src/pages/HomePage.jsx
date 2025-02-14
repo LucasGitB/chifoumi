@@ -1,8 +1,8 @@
 import { Link } from "react-router-dom";
-import ActionAreaCard from "../components/ActionAreaCard";
 import { HeaderTitle } from "../components/HeaderTitle";
 import imageStats from "../assets/logostats.jpg";
 import image from "../assets/logojeux.jpg";
+import { AreaCardMenu } from "../components/AreaCardMenu";
 
 const playDescription =
   "Chaque coup peut te couronner maître du hasard ou du calcul malin, qui sortira vainqueur ?";
@@ -14,19 +14,19 @@ export const HomePage = () => {
   return (
     <>
       <HeaderTitle title="Menu" showArrow={false} />
-      <div className="flex gap-36 justify-center items-center mt-24">
+      <div className="flex flex-col md:flex-row gap-8 md:gap-36 justify-center items-center mt-24">
         <Link to="/statistics">
-          <ActionAreaCard
-            title={"Statistiques"}
+          <AreaCardMenu
             description={statistiqueDescription}
+            title={"Statistiques"}
             image={imageStats}
           />
         </Link>
 
         <Link to="/create-game">
-          <ActionAreaCard
-            title={"Jouer"}
+          <AreaCardMenu
             description={playDescription}
+            title={"Jouer"}
             image={image}
           />
         </Link>
