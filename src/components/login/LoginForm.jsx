@@ -1,34 +1,46 @@
 import { Button, TextField } from '@mui/material';
 import { Link, useNavigate } from 'react-router-dom';
-import { useState } from 'react';
+import { memo, useState } from 'react';
 import ReportProblemIcon from '@mui/icons-material/ReportProblem';
 import { authService } from '../../services/auth.service';
+import { useMutation } from '@tanstack/react-query';
+import { decodeToken } from 'react-jwt';
 
-export const LoginForm = () => {
+export const LoginForm = memo(() => {
   const navigate = useNavigate();
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
+  const { mutate: login, isPending } = useMutation({
+    mutationFn: async ({ username, password }) => {
       const response = await authService.login(username, password);
+      return response.token;
+    },
+    onSuccess: (token) => {
+      const decodedToken = decodeToken(token);
+      const userId = decodedToken?._id;
+      localStorage.setItem('token', token);
+      localStorage.setItem('userId', userId);
+      navigate('/home');
+    },
+    onError: (error) => {
+      const errorMessage =
+        error.response?.data?.error || 'Erreur lors de la connexion.';
+      setErrorMessage(errorMessage);
+    },
+  });
 
-      if (response.token) {
-        localStorage.setItem('token', response.token);
-        navigate('/home');
-      }
-    } catch (error) {
-      if (error.response && error.response.data) {
-        setErrorMessage(
-          error.response.data.error || 'Erreur lors de la connexion.'
-        );
-      } else {
-        setErrorMessage('Une erreur est survenue. Veuillez réessayer.');
-      }
-    }
+  /**
+   * @type {import('react').FormEventHandler}
+   **/
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const fd = new FormData(e.currentTarget);
+    const username = fd.get('username').toString();
+    const password = fd.get('password').toString();
+
+    login({ username, password });
   };
 
   return (
@@ -42,24 +54,21 @@ export const LoginForm = () => {
             {errorMessage}
           </div>
         )}
-
         <TextField
           required
-          id='outlined-required'
+          name='username'
           label='Pseudo'
           value={username}
           onChange={(e) => setUsername(e.target.value)}
         />
-
         <TextField
           required
-          id='outlined-required'
+          name='password'
           label='Mot de passe'
           type='password'
           value={password}
           onChange={(e) => setPassword(e.target.value)}
         />
-
         <Button
           variant='contained'
           sx={{
@@ -68,6 +77,7 @@ export const LoginForm = () => {
             '&:hover': { backgroundColor: 'darkblue' },
             fontWeight: 'bold',
           }}
+          disabled={isPending}
           type='submit'>
           Se connecter
         </Button>
@@ -76,4 +86,4 @@ export const LoginForm = () => {
       </form>
     </>
   );
-};
+});

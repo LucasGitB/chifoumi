@@ -1,7 +1,8 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import axios from "axios";
-import { useCallback, useState } from "react";
-import { useMatchEvents } from "./use-match-events";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import axios from 'axios';
+import { useCallback, useState } from 'react';
+import { useMatchEvents } from './use-match-events';
+import { matchesService } from '../services/matches.service';
 
 /**
  * @param {string} matchId
@@ -14,15 +15,10 @@ export const useMatch = (matchId) => {
     isLoading,
     isError,
   } = useQuery({
-    queryKey: ["matches", matchId],
+    queryKey: ['matches', matchId],
     queryFn: async () => {
-      const response = await axios.get(
-        `http://localhost:3002/matches/${matchId}`,
-        {
-          headers: { Authorization: `Bearer ${localStorage.getItem("token")}` },
-        }
-      );
-      return response.data;
+      const response = await matchesService.getMatch(matchId);
+      return response;
     },
   });
 
@@ -35,17 +31,17 @@ export const useMatch = (matchId) => {
   const handleMatchEvent = useCallback(
     (data) => {
       switch (data.type) {
-        case "PLAYER1_JOIN":
-        case "PLAYER2_JOIN":
-        case "NEW_TURN":
-        case "PLAYER1_MOVED":
-        case "PLAYER2_MOVED":
-        case "TURN_ENDED":
-        case "MATCH_ENDED":
-          queryClient.invalidateQueries(["matches", matchId]);
+        case 'PLAYER1_JOIN':
+        case 'PLAYER2_JOIN':
+        case 'NEW_TURN':
+        case 'PLAYER1_MOVED':
+        case 'PLAYER2_MOVED':
+        case 'TURN_ENDED':
+        case 'MATCH_ENDED':
+          queryClient.invalidateQueries(['matches', matchId]);
           break;
         default:
-          console.log("Unhandled event type:", data.type);
+          console.log('Unhandled event type:', data.type);
       }
     },
     [matchId, queryClient]
@@ -62,7 +58,7 @@ export const useMatch = (matchId) => {
         { move },
         {
           headers: {
-            Authorization: `Bearer ${localStorage.getItem("token")}`,
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
         }
       );
@@ -70,7 +66,7 @@ export const useMatch = (matchId) => {
     },
     onError: (error) => {
       const errorMessage = error.response?.data;
-      console.error("Move error:", errorMessage);
+      console.error('Move error:', errorMessage);
     },
   });
 
