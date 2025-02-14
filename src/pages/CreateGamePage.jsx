@@ -49,7 +49,10 @@ export const CreateGamePage = () => {
       }
     } catch (error) {
       console.error("Erreur Axios:", error.response || error);
-      setErrorMessage(error.response?.data?.message || "Erreur lors de la création de la partie.");
+      setErrorMessage(
+        error.response?.data?.message ||
+          "Erreur lors de la création de la partie."
+      );
     } finally {
       setLoading(false);
     }
