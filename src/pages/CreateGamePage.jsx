@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import { Button, CircularProgress, Alert } from "@mui/material";
@@ -10,10 +10,17 @@ import feuille from "../assets/feuille.png";
 import ciseaux from "../assets/ciseaux.png";
 
 export const CreateGamePage = () => {
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
-  const [userId, setUserId] = useState(null);
+  const [matchInProgress, setMatchInProgress] = useState(null);
   const navigate = useNavigate();
+
+  const [playerMove, setPlayerMove] = useState("");
+
+  const handleMove = (move) => {
+    setPlayerMove(move);
+    console.log(move);
+  };
 
   useEffect(() => {
     const fetchMatchStatus = async () => {
@@ -71,7 +78,6 @@ export const CreateGamePage = () => {
 
       const decodedToken = decodeToken(token);
       const userId = decodedToken?._id;
-      setUserId(userId);
 
       if (!userId) {
         setErrorMessage("ID utilisateur manquant dans le token.");
@@ -104,20 +110,27 @@ export const CreateGamePage = () => {
           }
         );
 
-      if (response.status === 201 && response.data._id) {
-        navigate(`/matches/${response.data._id}`);
+        if (response.status === 201 && response.data._id) {
+          navigate(`/match/${response.data._id}`);
+        }
       }
     } catch (error) {
-      console.error("Erreur Axios:", error.response || error);
-      setErrorMessage(error.response?.data?.message || "Erreur lors de la création de la partie.");
+      setErrorMessage("Erreur lors de la création ou de la jonction du match.");
     } finally {
       setLoading(false);
     }
   };
 
+  if (loading) {
+    return <CircularProgress />;
+  }
+
+  if (errorMessage) {
+    return <Alert severity="error">{errorMessage}</Alert>;
+  }
+
   return (
     <>
-      <HeaderTitle title={"Jouer"} route="/home" showArrow={true} />
       <HeaderTitle title={"Jouer"} route="/home" showArrow={true} />
       <div className="flex justify-center items-center mt-24 gap-10">
         <ActionGameButton
@@ -143,29 +156,23 @@ export const CreateGamePage = () => {
         />
       </div>
       <div className="flex w-full gap-10 mt-10">
-        <div className="flex flex-col bg-white p-8 shadow-lg w-full rounded-lg">
+        <div className="flex flex-col bg-white p-8 shadow-lg w-full ml-10 rounded-lg">
+          <h2 className="text-xl font-bold mb-4">Rejoindre une partie</h2>
+          <p>Il n'y a pas de partie en cours</p>
+        </div>
+        <div className="flex flex-col bg-white p-8 shadow-lg w-full mr-10 rounded-lg">
           <h2 className="text-xl font-bold mb-4">Créer une partie</h2>
           <Button
             sx={{ backgroundColor: "#1E3A8A" }}
             variant="contained"
-            onClick={handleCreateGame}
-            disabled={loading}
+            onClick={handlePlayGame}
           >
-            {loading ? <CircularProgress size={24} /> : "Créer une partie"}
-          </Button>
-        </div>
-        <div className="flex flex-col bg-white p-8 shadow-lg w-full rounded-lg">
-          <h2 className="text-xl font-bold mb-4">Historique des parties</h2>
-          <Button
-            sx={{ backgroundColor: "#1E3A8A" }}
-            variant="contained"
-            onClick={() => navigate("/history")}
-          >
-            Voir l'historique des parties
+            {matchInProgress
+              ? "Rejoindre la partie"
+              : "Créer une nouvelle partie"}
           </Button>
         </div>
       </div>
-      {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
     </>
   );
 };
