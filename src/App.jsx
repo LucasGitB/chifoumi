@@ -1,31 +1,30 @@
-import { Route, Routes } from "react-router-dom";
-import { Layout } from "./pages/Layout";
-import { IndexPage } from "./pages/IndexPage";
-import { LoginPage } from "./pages/LoginPage";
-import { RegisterPage } from "./pages/RegisterPage";
-import { CreateGamePage } from "./pages/CreateGamePage";
-import PrivateRoute from "./PrivateRoute";
-import { MatchPage } from "./pages/MatchPage";
-import { HomePage } from "./pages/HomePage";
-import { StatisticsPage } from "./pages/StatisticsPages";
-import ShowHistory from "./pages/ShowHistory";
+import { IndexPage } from './pages/IndexPage';
+import { LoginPage } from './pages/LoginPage';
+import { RegisterPage } from './pages/RegisterPage';
+import { CreateGamePage } from './pages/CreateGamePage';
+import PrivateRoute from './PrivateRoute';
+import { MatchPage } from './pages/MatchPage';
+import { HomePage } from './pages/HomePage';
+import { StatisticsPage } from './pages/StatisticsPages';
+import ShowHistory from './pages/ShowHistory';
+import { Route, Routes } from 'react-router-dom';
+import { AuthenticatedLayout } from './layouts/AuthenticatedLayout';
+import { RootLayout } from './layouts/RootLayout';
 
 function App() {
   return (
     <Routes>
-      <Route path="/">
+      <Route element={<RootLayout />}>
         <Route index element={<IndexPage />} />
-        <Route path="login" element={<LoginPage />} />
-        <Route element={<Layout />}>
-          <Route path="register" element={<RegisterPage />} />
-          <Route
-            path="home"
-            element={<PrivateRoute element={<HomePage />} />}
-          />
-          <Route path="create-game" element={<CreateGamePage />} />
-          <Route path="matches/:id" element={<MatchPage />} />
-          <Route path="statistics" element={<StatisticsPage />} />
-          <Route path="history" element={<PrivateRoute element={<ShowHistory />} />} />
+        <Route path='login' element={<LoginPage />} />
+        <Route path='register' element={<RegisterPage />} />
+
+        <Route element={<PrivateRoute element={<AuthenticatedLayout />} />}>
+          <Route path='home' element={<HomePage />} />
+          <Route path='create-game' element={<CreateGamePage />} />
+          <Route path='matches/:id' element={<MatchPage />} />
+          <Route path='statistics' element={<StatisticsPage />} />
+          <Route path='history' element={<ShowHistory />} />
         </Route>
       </Route>
     </Routes>
