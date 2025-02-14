@@ -32,7 +32,7 @@ export const StatisticsPage = () => {
           return;
         }
 
-        const response = await axios.get("http://localhost:3002/matches", {
+        const response = await axios.get(`${import.meta.env.VITE_URL_API}/matches`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -76,7 +76,7 @@ export const StatisticsPage = () => {
 
       if (matchInProgress) {
         const response = await axios.post(
-          `http://localhost:3002/matches/${matchInProgress._id}`,
+          `${import.meta.env.VITE_URL_API}/matches/${matchInProgress._id}`,
           {},
           {
             headers: {
@@ -91,7 +91,7 @@ export const StatisticsPage = () => {
       } else {
 
         const response = await axios.post(
-          "http://localhost:3002/matches",
+          `${import.meta.env.VITE_URL_API}/matches`,
           {},
           {
             headers: {

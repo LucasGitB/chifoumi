@@ -36,7 +36,7 @@ export const MatchPage = () => {
         }
 
         const response = await axios.get(
-          `http://localhost:3002/matches/${id}`,
+          `${import.meta.env.VITE_URL_API}/matches/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token}`,
@@ -67,7 +67,7 @@ export const MatchPage = () => {
     const setupSSE = () => {
       const token = localStorage.getItem("token");
       const source = new EventSource(
-        `http://localhost:3002/matches/${id}/subscribe`,
+        `${import.meta.env.VITE_URL_API}/matches/${id}/subscribe`,
         {
           headers: {
             Authorization: `Bearer ${token}`,
@@ -135,7 +135,7 @@ export const MatchPage = () => {
       const idTurn = currentTurn;
 
       await axios.post(
-        `http://localhost:3002/matches/${id}/turns/${idTurn}`,
+        `${import.meta.env.VITE_URL_API}/matches/${id}/turns/${idTurn}`,
         { move },
         {
           headers: {
@@ -147,7 +147,7 @@ export const MatchPage = () => {
 
       setLoading(true);
       const matchResponse = await axios.get(
-        `http://localhost:3002/matches/${id}`,
+        `${import.meta.env.VITE_URL_API}/matches/${id}`,
         {
           headers: {
             Authorization: `Bearer ${token}`,

@@ -17,7 +17,7 @@ export const CreateGameButton = () => {
       const token = localStorage.getItem("token");
 
       const response = await axios.post(
-        "http://localhost:3002/matches",
+        `${import.meta.env.VITE_URL_API}/matches`,
         {},
         {
           headers: {

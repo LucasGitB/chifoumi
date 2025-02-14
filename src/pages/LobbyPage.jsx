@@ -19,7 +19,7 @@ export const LobbyPage = () => {
     const fetchMatchData = async () => {
       try {
         const token = localStorage.getItem("token");
-        const response = await axios.get(`http://localhost:3002/matches/${matchId}`, {
+        const response = await axios.get(`${import.meta.env.VITE_URL_API}/matches/${matchId}`, {
           headers: {
             Authorization: `Bearer ${token}`,
           },
@@ -40,7 +40,7 @@ export const LobbyPage = () => {
       const token = localStorage.getItem("token");
 
       await axios.post(
-        `http://localhost:3002/matches/${matchId}/join`,
+        `${import.meta.env.VITE_URL_API}/matches/${matchId}/join`,
         {},
         {
           headers: {

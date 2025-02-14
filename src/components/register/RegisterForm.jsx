@@ -22,7 +22,7 @@ export const RegisterForm = () => {
     setErrorMessage("");
 
     try {
-      const response = await axios.post("http://localhost:3002/register", {
+      const response = await axios.post(`${import.meta.env.VITE_URL_API}/register`, {
         username,
         password,
       });

@@ -32,7 +32,7 @@ function ShowHistory() {
                     return;
                 }
 
-                const response = await axios.get("http://localhost:3002/matches", {
+                const response = await axios.get(`${import.meta.env.VITE_URL_API}/matches`, {
                     headers: {
                         Authorization: `Bearer ${token}`,
                     },
@@ -63,7 +63,7 @@ function ShowHistory() {
 
             if (!isMatchFull) {
                 // Rejoindre une partie en attente
-                await axios.post("http://localhost:3002/matches", {}, {
+                await axios.post(`${import.meta.env.VITE_URL_API}/matches`, {}, {
                     headers: { Authorization: `Bearer ${token}` },
                 });
             }
