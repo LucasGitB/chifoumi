@@ -1,62 +1,37 @@
-import { useState } from "react";
+import { useCallback } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "axios";
-import { Button, CircularProgress, Alert } from "@mui/material";
+import { Button, CircularProgress } from "@mui/material";
 import { HeaderTitle } from "../components/HeaderTitle";
-import { decodeToken } from "react-jwt";
+import { matchesService } from "../services/matches.service";
+import { useQuery } from "@tanstack/react-query";
 
 export const CreateGamePage = () => {
-  const [loading, setLoading] = useState(false);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [userId, setUserId] = useState(null);
   const navigate = useNavigate();
 
-  const handleCreateGame = async () => {
-    setLoading(true);
-    setErrorMessage("");
+  const {
+    data: matches,
+    isLoading,
+    isError,
+    isSuccess,
+  } = useQuery({
+    queryKey: ["matches"],
+    queryFn: async () => {
+      const response = await matchesService.getMatches();
+      return response;
+    },
+  });
 
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setErrorMessage("Veuillez vous connecter.");
-        setLoading(false);
-        return;
-      }
+  const matchInProgress = isSuccess ? matches?.at(-1) : null;
+  const isMatchFinished = matchInProgress?.winner !== undefined;
 
-      const decodedToken = decodeToken(token);
-      const userId = decodedToken?._id;
-      setUserId(userId);
-
-      if (!userId) {
-        setErrorMessage("ID utilisateur manquant dans le token.");
-        setLoading(false);
-        return;
-      }
-
-      const response = await axios.post(
-        `${import.meta.env.VITE_URL_API}/matches`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json",
-          },
-        }
-      );
-
-      if (response.status === 201 && response.data._id) {
-        navigate(`/matches/${response.data._id}`);
-      }
-    } catch (error) {
-      console.error("Erreur Axios:", error.response || error);
-      setErrorMessage(
-        error.response?.data?.message ||
-          "Erreur lors de la création de la partie."
-      );
-    } finally {
-      setLoading(false);
+  const handlePlayGame = useCallback(async () => {
+    if (matchInProgress && !isMatchFinished) {
+      navigate(`/matches/${matchInProgress._id}`);
+    } else {
+      const newMatch = await matchesService.createMatch();
+      navigate(`/matches/${newMatch._id}`);
     }
-  };
+  }, [isMatchFinished, matchInProgress, navigate]);
 
   return (
     <>
@@ -67,10 +42,16 @@ export const CreateGamePage = () => {
           <Button
             sx={{ backgroundColor: "#1E3A8A" }}
             variant="contained"
-            onClick={handleCreateGame}
-            disabled={loading}
+            onClick={handlePlayGame}
+            disabled={isLoading || isError}
           >
-            {loading ? <CircularProgress size={24} /> : "Créer une partie"}
+            {isLoading ? (
+              <CircularProgress size={24} />
+            ) : isMatchFinished ? (
+              "Créer une nouvelle partie"
+            ) : (
+              "Rejoindre la partie"
+            )}
           </Button>
         </div>
         <div className="flex flex-col bg-white p-8 shadow-lg w-full rounded-lg">
@@ -84,7 +65,7 @@ export const CreateGamePage = () => {
           </Button>
         </div>
       </div>
-      {errorMessage && <Alert severity="error">{errorMessage}</Alert>}
+      {/* {errorMessage && <Alert severity='error'>{errorMessage}</Alert>/} */}
     </>
   );
 };

@@ -1,21 +1,21 @@
-require("dotenv-flow").config();
-const express = require("express");
+require('dotenv-flow').config();
+const express = require('express');
 const app = express();
-const cors = require("cors");
-const { v4: uuidv4 } = require("uuid");
-const { checkTurnWinner, checkMatchWinner } = require("./lib/chifoumi");
-const NotificationCenter = require("./lib/notificationCenter");
-const createToken = require("./lib/jwt").createToken;
-const verifyJwt = require("./middlewares/verifyJwt");
-require("./lib/mongo");
-const User = require("./models/user");
-const Match = require("./models/match");
-const turnValidator = require("./middlewares/turnValidator");
+const cors = require('cors');
+const { v4: uuidv4 } = require('uuid');
+const { checkTurnWinner, checkMatchWinner } = require('./lib/chifoumi');
+const NotificationCenter = require('./lib/notificationCenter');
+const createToken = require('./lib/jwt').createToken;
+const verifyJwt = require('./middlewares/verifyJwt');
+require('./lib/mongo');
+const User = require('./models/user');
+const Match = require('./models/match');
+const turnValidator = require('./middlewares/turnValidator');
 
 app.use(express.json());
 app.use(cors());
 
-app.post("/login", async function (req, res) {
+app.post('/login', async function (req, res) {
   try {
     let user = await User.findOne({
       username: req.body.username,
@@ -29,7 +29,8 @@ app.post("/login", async function (req, res) {
     res.status(500).json(error);
   }
 });
-app.post("/register", async function (req, res) {
+
+app.post('/register', async function (req, res) {
   try {
     let user = await User.findOne({
       username: req.body.username,
@@ -42,27 +43,27 @@ app.post("/register", async function (req, res) {
       user = await user.save();
       res.status(201).json(user);
     } else {
-      res.status(409).json({ error: "User already exists" });
+      res.status(409).json({ error: 'User already exists' });
     }
   } catch (error) {
     res.status(500).json(error);
   }
 });
 
-app.post("/matches", verifyJwt(), async function (req, res) {
+app.post('/matches', verifyJwt(), async function (req, res) {
   try {
     let event = {};
     if (
       await Match.findOne({
-        "user1._id": req.user._id,
+        'user1._id': req.user._id,
         user2: null,
       })
     ) {
-      return res.status(400).json({ match: "You already have a match" });
+      return res.status(400).json({ match: 'You already have a match' });
     }
 
     let match = await Match.findOne({
-      "user1._id": { $ne: req.user._id },
+      'user1._id': { $ne: req.user._id },
       user2: null,
     });
     if (!match) {
@@ -72,13 +73,13 @@ app.post("/matches", verifyJwt(), async function (req, res) {
         turns: [],
         createdAt: new Date(),
       });
-      event.type = "PLAYER1_JOIN";
+      event.type = 'PLAYER1_JOIN';
       event.payload = {
         user: req.user.username,
       };
     } else {
       match.user2 = req.user;
-      event.type = "PLAYER2_JOIN";
+      event.type = 'PLAYER2_JOIN';
       event.payload = {
         user: req.user.username,
       };
@@ -89,7 +90,7 @@ app.post("/matches", verifyJwt(), async function (req, res) {
     NotificationCenter.notify(event);
     if (match.user2) {
       event = {
-        type: "NEW_TURN",
+        type: 'NEW_TURN',
         matchId: match._id.valueOf(),
         payload: {
           turnId: 1,
@@ -101,13 +102,13 @@ app.post("/matches", verifyJwt(), async function (req, res) {
     res.status(500).json(error);
   }
 });
-app.get("/matches", verifyJwt(), async function (req, res) {
+app.get('/matches', verifyJwt(), async function (req, res) {
   try {
     const { order, itemsPerPage, page, ...criteria } = req.query;
     const match = await Match.find(
       {
         ...criteria,
-        $or: [{ "user1._id": req.user._id }, { "user2._id": req.user._id }],
+        $or: [{ 'user1._id': req.user._id }, { 'user2._id': req.user._id }],
       },
       null,
       { sort: order, skip: (page - 1) * itemsPerPage, limit: itemsPerPage }
@@ -118,10 +119,10 @@ app.get("/matches", verifyJwt(), async function (req, res) {
           m.turns = m.turns.map((turn) => {
             if (!turn.winner) {
               if (turn.user2 && m.user2._id !== req.user._id) {
-                turn.user2 = "?";
+                turn.user2 = '?';
               }
               if (turn.user1 && m.user1._id !== req.user._id) {
-                turn.user1 = "?";
+                turn.user1 = '?';
               }
             }
             return turn;
@@ -133,19 +134,19 @@ app.get("/matches", verifyJwt(), async function (req, res) {
     res.status(500).json(error);
   }
 });
-app.get("/matches/:id", verifyJwt(), async (req, res) => {
+app.get('/matches/:id', verifyJwt(), async (req, res) => {
   try {
     const match = await Match.findOne({
       _id: req.params.id,
-      $or: [{ "user1._id": req.user._id }, { "user2._id": req.user._id }],
+      $or: [{ 'user1._id': req.user._id }, { 'user2._id': req.user._id }],
     });
     match.turns = match.turns.map((turn) => {
       if (!turn.winner) {
         if (turn.user2 && match.user2._id !== req.user._id) {
-          turn.user2 = "?";
+          turn.user2 = '?';
         }
         if (turn.user1 && match.user1._id !== req.user._id) {
-          turn.user1 = "?";
+          turn.user1 = '?';
         }
       }
       return turn;
@@ -157,7 +158,7 @@ app.get("/matches/:id", verifyJwt(), async (req, res) => {
   }
 });
 app.post(
-  "/matches/:id/turns/:idTurn",
+  '/matches/:id/turns/:idTurn',
   verifyJwt(),
   turnValidator,
   async function (req, res) {
@@ -166,7 +167,7 @@ app.post(
       const match = req.match;
       const turn = req.turn;
       const isPlayer1 = match.user1._id === req.user._id;
-      turn[isPlayer1 ? "user1" : "user2"] = req.body.move;
+      turn[isPlayer1 ? 'user1' : 'user2'] = req.body.move;
       match.turns[idTurn - 1] = turn;
       if (turn.user1 && turn.user2) {
         turn.winner = checkTurnWinner(turn);
@@ -174,7 +175,7 @@ app.post(
       await match.save();
       res.sendStatus(202);
       NotificationCenter.notify({
-        type: isPlayer1 ? "PLAYER1_MOVED" : "PLAYER2_MOVED",
+        type: isPlayer1 ? 'PLAYER1_MOVED' : 'PLAYER2_MOVED',
         matchId: match._id.valueOf(),
         payload: {
           turn: idTurn,
@@ -182,7 +183,7 @@ app.post(
       });
       if (turn.user1 && turn.user2) {
         NotificationCenter.notify({
-          type: "TURN_ENDED",
+          type: 'TURN_ENDED',
           matchId: match._id.valueOf(),
           payload: {
             newTurnId: idTurn + 1,
@@ -194,10 +195,10 @@ app.post(
           match.winner = checkMatchWinner(match);
           await match.save();
           NotificationCenter.notify({
-            type: "MATCH_ENDED",
+            type: 'MATCH_ENDED',
             matchId: match._id.valueOf(),
             payload: {
-              winner: (match.winner && match.winner.username) || "draw",
+              winner: (match.winner && match.winner.username) || 'draw',
             },
           });
         }
@@ -208,7 +209,7 @@ app.post(
   }
 );
 
-app.get("/matches/:id/subscribe", verifyJwt(), function (request, response) {
+app.get('/matches/:id/subscribe', verifyJwt(), function (request, response) {
   try {
     const clientId = request.user._id;
 
@@ -220,7 +221,7 @@ app.get("/matches/:id/subscribe", verifyJwt(), function (request, response) {
 
     NotificationCenter.addClient(newClient);
 
-    request.on("close", () => {
+    request.on('close', () => {
       console.log(`${clientId} Connection closed`);
       NotificationCenter.removeClient(newClient);
     });
