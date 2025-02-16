@@ -3,13 +3,14 @@ import { LoginPage } from './pages/LoginPage';
 import { RegisterPage } from './pages/RegisterPage';
 import { CreateGamePage } from './pages/CreateGamePage';
 import PrivateRoute from './PrivateRoute';
-import { MatchPage } from './pages/MatchPage';
 import { HomePage } from './pages/HomePage';
 import { StatisticsPage } from './pages/StatisticsPages';
 import ShowHistory from './pages/ShowHistory';
 import { Route, Routes } from 'react-router-dom';
 import { AuthenticatedLayout } from './layouts/AuthenticatedLayout';
 import { RootLayout } from './layouts/RootLayout';
+import { MatchPage } from './pages/MatchPage';
+import { MatchResultsPage } from './pages/MatchResultsPage';
 
 function App() {
   return (
@@ -22,6 +23,7 @@ function App() {
         <Route element={<PrivateRoute element={<AuthenticatedLayout />} />}>
           <Route path='home' element={<HomePage />} />
           <Route path='create-game' element={<CreateGamePage />} />
+          <Route path='matches/:id/results' element={<MatchResultsPage />} />
           <Route path='matches/:id' element={<MatchPage />} />
           <Route path='statistics' element={<StatisticsPage />} />
           <Route path='history' element={<ShowHistory />} />

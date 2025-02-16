@@ -8,8 +8,6 @@ import { decodeToken } from 'react-jwt';
 
 export const LoginForm = memo(() => {
   const navigate = useNavigate();
-  const [username, setUsername] = useState('');
-  const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
 
   const { mutate: login, isPending } = useMutation({
@@ -45,44 +43,44 @@ export const LoginForm = memo(() => {
 
   return (
     <>
-      <h1 className='font-bold text-3xl'>Connexion</h1>
+      <h1 className="font-bold text-3xl">Connexion</h1>
 
-      <form className='flex flex-col gap-6 mt-8' onSubmit={handleSubmit}>
+      <form className="flex flex-col gap-6 mt-8" onSubmit={handleSubmit}>
         {errorMessage && (
-          <div className='text-red-500 bg-red-200 p-2 rounded-lg flex gap-2'>
+          <div className="text-red-500 bg-red-200 p-2 rounded-lg flex gap-2">
             <ReportProblemIcon />
             {errorMessage}
           </div>
         )}
+
         <TextField
           required
+          label="Pseudo"
           name='username'
-          label='Pseudo'
-          value={username}
-          onChange={(e) => setUsername(e.target.value)}
         />
-        <TextField
+
+        <TextField          
           required
+          label="Mot de passe"
+          type="password"
           name='password'
-          label='Mot de passe'
-          type='password'
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
         />
+
         <Button
-          variant='contained'
+          variant="contained"
           sx={{
-            backgroundColor: '#1E3A8A',
-            color: 'white',
-            '&:hover': { backgroundColor: 'darkblue' },
-            fontWeight: 'bold',
+            backgroundColor: "#1E3A8A",
+            color: "white",
+            "&:hover": { backgroundColor: "darkblue" },
+            fontWeight: "bold",
           }}
           disabled={isPending}
-          type='submit'>
+          type="submit"
+        >
           Se connecter
         </Button>
 
-        <Link to='/register'>Pas de compte ?</Link>
+        <Link to="/register">Pas de compte ?</Link>
       </form>
     </>
   );

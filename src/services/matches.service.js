@@ -52,15 +52,4 @@ export const matchesService = {
     );
     return response.data;
   },
-
-  /**
-   * @param {string} matchId
-   * @returns {Promise<void>}
-   */
-  subscribeToMatch: async (matchId) => {
-    const response = await api.get(`/matches/${matchId}/subscribe`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` },
-    });
-    return response.data;
-  },
 };
