@@ -1,122 +1,56 @@
-import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import axios from "axios";
 import { CircularProgress, Alert } from "@mui/material";
 import { HeaderTitle } from "../components/HeaderTitle";
-import { decodeToken } from "react-jwt";
+import { useQuery } from "@tanstack/react-query";
+import { matchesService } from "../services/matches.service";
+import { useMemo } from "react";
 
 export const StatisticsPage = () => {
-  const [loading, setLoading] = useState(true);
-  const [errorMessage, setErrorMessage] = useState("");
-  const [matchInProgress, setMatchInProgress] = useState(null); 
-  const navigate = useNavigate();
+  const {
+    data: matches,
+    isLoading,
+    error,
+  } = useQuery({
+    queryKey: ["matches"],
+    queryFn: () => matchesService.getMatches(),
+  });
 
-  useEffect(() => {
-    const fetchMatchStatus = async () => {
-      try {
-        const token = localStorage.getItem("token");
-        if (!token) {
-          setErrorMessage("Veuillez vous connecter.");
-          setLoading(false);
-          navigate("/login");
-          return;
-        }
-
-        const decodedToken = decodeToken(token);
-        const userId = decodedToken?._id;
-
-        if (!userId) {
-          setErrorMessage("ID utilisateur manquant dans le token.");
-          setLoading(false);
-          navigate("/login");
-          return;
-        }
-
-        const response = await axios.get(`${import.meta.env.VITE_URL_API}/matches`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-
-        const availableMatch = response.data.find(
-          (match) => match.user2 === null && match.user1._id !== userId
-        );
-
-        setMatchInProgress(availableMatch || null);
-      } catch (error) {
-        setErrorMessage("Erreur lors de la récupération des parties.");
-      } finally {
-        setLoading(false);
-      }
+  const stats = useMemo(() => {
+    if (!matches) return {};
+    const username = localStorage.getItem("username");
+    const stats = matches.reduce(
+      (acc, match) => {
+        return {
+          wins: match.winner?.username === username ? acc.wins + 1 : acc.wins,
+          defeats:
+            match.winner !== null && match.winner.username !== username
+              ? acc.defeats + 1
+              : acc.defeats,
+          draws: match.winner === null ? acc.draws + 1 : acc.draws,
+        };
+      },
+      { wins: 0, defeats: 0, draws: 0 }
+    );
+    return {
+      wins: stats.wins,
+      defeats: stats.defeats,
+      draws: stats.draws,
+      totalGames: matches.length,
     };
+  }, [matches]);
 
-    fetchMatchStatus();
-  }, [navigate]);
-
-  const handlePlayGame = async () => {
-    setLoading(true);
-    setErrorMessage("");
-
-    try {
-      const token = localStorage.getItem("token");
-      if (!token) {
-        setErrorMessage("Veuillez vous connecter.");
-        setLoading(false);
-        return;
-      }
-
-      const decodedToken = decodeToken(token);
-      const userId = decodedToken?._id;
-
-      if (!userId) {
-        setErrorMessage("ID utilisateur manquant dans le token.");
-        setLoading(false);
-        return;
-      }
-
-      if (matchInProgress) {
-        const response = await axios.post(
-          `${import.meta.env.VITE_URL_API}/matches/${matchInProgress._id}`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (response.status === 201) {
-          navigate(`/match/${matchInProgress._id}`);
-        }
-      } else {
-
-        const response = await axios.post(
-          `${import.meta.env.VITE_URL_API}/matches`,
-          {},
-          {
-            headers: {
-              Authorization: `Bearer ${token}`,
-            },
-          }
-        );
-
-        if (response.status === 201 && response.data._id) {
-          navigate(`/match/${response.data._id}`);
-        }
-      }
-    } catch (error) {
-      setErrorMessage("Erreur lors de la création ou de la jonction du match.");
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  if (loading) {
+  if (isLoading) {
     return <CircularProgress />;
   }
 
-  if (errorMessage) {
-    return <Alert severity="error">{errorMessage}</Alert>;
+  if (error) {
+    return (
+      <Alert severity="error">
+        {error?.message ||
+          joinMatchMutation.error?.message ||
+          joinMatchMutation.error?.message ||
+          "Une erreur est survenue"}
+      </Alert>
+    );
   }
 
   return (
@@ -125,11 +59,21 @@ export const StatisticsPage = () => {
       <div className="flex w-full gap-10 mt-10">
         <div className="flex flex-col bg-white p-8 shadow-lg w-full ml-10 rounded-lg">
           <h2 className="text-xl font-bold mb-4">Parties jouées</h2>
+          <p className="text-3xl font-bold text-blue-600">{stats.totalGames}</p>
         </div>
         <div className="flex flex-col bg-white p-8 shadow-lg w-full mr-10 rounded-lg">
-          <h2 className="text-xl font-bold mb-4">Victoires</h2>
-
-          <h2 className="text-xl font-bold mb-4">Défaites</h2>
+          <div className="mb-6">
+            <h2 className="text-xl font-bold mb-2">Victoires</h2>
+            <p className="text-3xl font-bold text-green-600">{stats.wins}</p>
+          </div>
+          <div className="mb-6">
+            <h2 className="text-xl font-bold mb-2">Défaites</h2>
+            <p className="text-3xl font-bold text-red-600">{stats.defeats}</p>
+          </div>
+          <div>
+            <h2 className="text-xl font-bold mb-2">Matchs nuls</h2>
+            <p className="text-3xl font-bold text-yellow-600">{stats.draws}</p>
+          </div>
         </div>
       </div>
     </>

@@ -8,15 +8,13 @@ import MatchWaitingRoom from "../components/match/MatchWaitingRoom";
 import MatchTurnResult from "../components/match/MatchTurnResult";
 import MatchWaitingOpponentTurn from "../components/match/MatchWaitingOpponentTurn";
 import { movesStrings } from "../data/moves";
-import pierre from "../assets/pierre.png";
-import feuille from "../assets/feuille.png";
-import ciseaux from "../assets/ciseaux.png";
 import ActionGameCard from "../components/match/ActionGameCard";
+import { imagesUrls } from "../data/images";
 
 const moves = {
-  rock: { image: pierre, color: "rgba(231, 29, 54, 0.8)" }, // Red
-  paper: { image: feuille, color: "rgba(171, 225, 136, 0.7)" }, // Green
-  scissors: { image: ciseaux, color: "rgba(33, 145, 251, 0.7)" }, // Blue
+  rock: { image: imagesUrls.rock, color: "rgba(231, 29, 54, 0.8)" }, // Red
+  paper: { image: imagesUrls.paper, color: "rgba(171, 225, 136, 0.7)" }, // Green
+  scissors: { image: imagesUrls.scissors, color: "rgba(33, 145, 251, 0.7)" }, // Blue
 };
 
 export const MatchPage = () => {

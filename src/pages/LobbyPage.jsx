@@ -1,32 +1,27 @@
-// src/pages/LobbyPage.js
 import { useEffect, useState } from "react";
-import { useNavigate, useLocation } from "react-router-dom";
-import axios from "axios";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Button, CircularProgress, Alert } from "@mui/material";
 import { HeaderTitle } from "../components/HeaderTitle";
+import { matchesService } from "../services/matches.service";
 
 export const LobbyPage = () => {
   const [match, setMatch] = useState(null);
   const [loading, setLoading] = useState(true);
   const [errorMessage, setErrorMessage] = useState("");
-  const location = useLocation();
   const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
 
-  const searchParams = new URLSearchParams(location.search);
   const matchId = searchParams.get("matchId");
 
   useEffect(() => {
     const fetchMatchData = async () => {
       try {
-        const token = localStorage.getItem("token");
-        const response = await axios.get(`${import.meta.env.VITE_URL_API}/matches/${matchId}`, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        });
-        setMatch(response.data);
+        const match = await matchesService.getMatch(matchId);
+        setMatch(match);
       } catch (error) {
-        setErrorMessage("Impossible de récupérer les informations de la partie.");
+        setErrorMessage(
+          "Impossible de récupérer les informations de la partie."
+        );
       } finally {
         setLoading(false);
       }
@@ -37,19 +32,9 @@ export const LobbyPage = () => {
 
   const handleJoinGame = async () => {
     try {
-      const token = localStorage.getItem("token");
+      const newMatch = await matchesService.createMatch(matchId);
 
-      await axios.post(
-        `${import.meta.env.VITE_URL_API}/matches/${matchId}/join`,
-        {},
-        {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        }
-      );
-
-      navigate(`/match/${matchId}`);
+      navigate(`/match/${newMatch._id}`);
     } catch (error) {
       setErrorMessage("Erreur lors de la tentative de rejoindre le match.");
     }
@@ -74,7 +59,8 @@ export const LobbyPage = () => {
             <strong>Joueur 1:</strong> {match.user1.username}
           </div>
           <div>
-            <strong>Joueur 2:</strong> {match.user2 ? match.user2.username : "En attente..."}
+            <strong>Joueur 2:</strong>{" "}
+            {match.user2 ? match.user2.username : "En attente..."}
           </div>
         </div>
 
@@ -92,8 +78,13 @@ export const LobbyPage = () => {
 
         {match.user2 && (
           <div className="mt-4">
-            <p className="text-green-600">Un deuxième joueur a rejoint la partie !</p>
-            <Button variant="contained" onClick={() => navigate(`/match/${match._id}`)}>
+            <p className="text-green-600">
+              Un deuxième joueur a rejoint la partie !
+            </p>
+            <Button
+              variant="contained"
+              onClick={() => navigate(`/match/${match._id}`)}
+            >
               Commencer la partie
             </Button>
           </div>

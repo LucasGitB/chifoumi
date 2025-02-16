@@ -1,14 +1,14 @@
-import { Button, TextField } from '@mui/material';
-import { Link, useNavigate } from 'react-router-dom';
-import { memo, useState } from 'react';
-import ReportProblemIcon from '@mui/icons-material/ReportProblem';
-import { authService } from '../../services/auth.service';
-import { useMutation } from '@tanstack/react-query';
-import { decodeToken } from 'react-jwt';
+import { Button, TextField } from "@mui/material";
+import { Link, useNavigate } from "react-router-dom";
+import { memo, useState } from "react";
+import ReportProblemIcon from "@mui/icons-material/ReportProblem";
+import { authService } from "../../services/auth.service";
+import { useMutation } from "@tanstack/react-query";
+import { decodeToken } from "react-jwt";
 
 export const LoginForm = memo(() => {
   const navigate = useNavigate();
-  const [errorMessage, setErrorMessage] = useState('');
+  const [errorMessage, setErrorMessage] = useState("");
 
   const { mutate: login, isPending } = useMutation({
     mutationFn: async ({ username, password }) => {
@@ -18,13 +18,16 @@ export const LoginForm = memo(() => {
     onSuccess: (token) => {
       const decodedToken = decodeToken(token);
       const userId = decodedToken?._id;
-      localStorage.setItem('token', token);
-      localStorage.setItem('userId', userId);
-      navigate('/home');
+      const username = decodedToken?.username;
+      localStorage.setItem("token", token);
+      localStorage.setItem("userId", userId);
+      localStorage.setItem("username", username);
+
+      navigate("/home");
     },
     onError: (error) => {
       const errorMessage =
-        error.response?.data?.error || 'Erreur lors de la connexion.';
+        error.response?.data?.error || "Erreur lors de la connexion.";
       setErrorMessage(errorMessage);
     },
   });
@@ -35,8 +38,8 @@ export const LoginForm = memo(() => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const fd = new FormData(e.currentTarget);
-    const username = fd.get('username').toString();
-    const password = fd.get('password').toString();
+    const username = fd.get("username").toString();
+    const password = fd.get("password").toString();
 
     login({ username, password });
   };
@@ -53,17 +56,13 @@ export const LoginForm = memo(() => {
           </div>
         )}
 
-        <TextField
-          required
-          label="Pseudo"
-          name='username'
-        />
+        <TextField required label="Pseudo" name="username" />
 
-        <TextField          
+        <TextField
           required
           label="Mot de passe"
           type="password"
-          name='password'
+          name="password"
         />
 
         <Button

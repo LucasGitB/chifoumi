@@ -1,9 +1,9 @@
-import { useCallback } from 'react';
-import { useNavigate } from 'react-router-dom';
-import { Button, CircularProgress } from '@mui/material';
-import { HeaderTitle } from '../components/HeaderTitle';
-import { matchesService } from '../services/matches.service';
-import { useQuery } from '@tanstack/react-query';
+import { useCallback } from "react";
+import { useNavigate } from "react-router-dom";
+import { Button, CircularProgress } from "@mui/material";
+import { HeaderTitle } from "../components/HeaderTitle";
+import { matchesService } from "../services/matches.service";
+import { useQuery } from "@tanstack/react-query";
 
 export const CreateGamePage = () => {
   const navigate = useNavigate();
@@ -14,7 +14,7 @@ export const CreateGamePage = () => {
     isError,
     isSuccess,
   } = useQuery({
-    queryKey: ['matches'],
+    queryKey: ["matches"],
     queryFn: async () => {
       const response = await matchesService.getMatches();
       return response;
@@ -35,30 +35,32 @@ export const CreateGamePage = () => {
 
   return (
     <>
-      <HeaderTitle title={'Jouer'} route='/home' showArrow={true} />
-      <div className='flex w-full gap-10 mt-10'>
-        <div className='flex flex-col bg-white p-8 shadow-lg w-full rounded-lg'>
-          <h2 className='text-xl font-bold mb-4'>Créer une partie</h2>
+      <HeaderTitle title={"Jouer"} route="/home" showArrow={true} />
+      <div className="flex w-full gap-10 mt-10">
+        <div className="flex flex-col bg-white p-8 shadow-lg w-full rounded-lg">
+          <h2 className="text-xl font-bold mb-4">Créer une partie</h2>
           <Button
-            sx={{ backgroundColor: '#1E3A8A' }}
-            variant='contained'
+            sx={{ backgroundColor: "#1E3A8A" }}
+            variant="contained"
             onClick={handlePlayGame}
-            disabled={isLoading || isError}>
+            disabled={isLoading || isError}
+          >
             {isLoading ? (
               <CircularProgress size={24} />
             ) : isMatchFinished ? (
-              'Créer une nouvelle partie'
+              "Créer une nouvelle partie"
             ) : (
-              'Rejoindre la partie'
+              "Rejoindre la partie"
             )}
           </Button>
         </div>
-        <div className='flex flex-col bg-white p-8 shadow-lg w-full rounded-lg'>
-          <h2 className='text-xl font-bold mb-4'>Historique des parties</h2>
+        <div className="flex flex-col bg-white p-8 shadow-lg w-full rounded-lg">
+          <h2 className="text-xl font-bold mb-4">Historique des parties</h2>
           <Button
-            sx={{ backgroundColor: '#1E3A8A' }}
-            variant='contained'
-            onClick={() => navigate('/history')}>
+            sx={{ backgroundColor: "#1E3A8A" }}
+            variant="contained"
+            onClick={() => navigate("/history")}
+          >
             Voir l'historique des parties
           </Button>
         </div>
