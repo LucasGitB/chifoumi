@@ -14,9 +14,9 @@ import ciseaux from "../assets/ciseaux.png";
 import ActionGameCard from "../components/match/ActionGameCard";
 
 const moves = {
-  rock: { image: pierre, color: "rgba(169, 169, 169, 0.7)" },
-  paper: { image: feuille, color: "rgba(144, 238, 144, 0.7)" },
-  scissors: { image: ciseaux, color: "rgba(255, 182, 193, 0.7)" },
+  rock: { image: pierre, color: "rgba(231, 29, 54, 0.8)" }, // Red
+  paper: { image: feuille, color: "rgba(171, 225, 136, 0.7)" }, // Green
+  scissors: { image: ciseaux, color: "rgba(33, 145, 251, 0.7)" }, // Blue
 };
 
 export const MatchPage = () => {
